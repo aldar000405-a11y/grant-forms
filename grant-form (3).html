@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grant Portal - New Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #059669 0%, #0d9488 100%); }
+    .glass-effect { backdrop-filter: blur(10px); background: rgba(255,255,255,0.95); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen flex items-center justify-center p-4">
+
+<div class="w-full max-w-4xl glass-effect rounded-2xl shadow-2xl overflow-hidden border border-white/50">
+
+  <!-- Header -->
+  <div class="gradient-bg px-8 py-8 text-center">
+    <h1 class="text-3xl font-bold text-white mb-2">Smart Grant Portal</h1>
+    <p class="text-emerald-100 text-sm">Submit a grant application for community-impact projects</p>
+  </div>
+
+  <!-- Form -->
+  <form id="grantForm" class="p-8 space-y-6">
+    
+    <!-- Personal Info -->
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Full Name *</label>
+        <input type="text" name="name" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="John Doe">
+      </div>
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Email Address *</label>
+        <input type="email" name="email" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="example@email.com">
+      </div>
+    </div>
+
+    <!-- Organization -->
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Organization *</label>
+        <input type="text" name="organization" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="Your organization">
+      </div>
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Contact Phone</label>
+        <input type="tel" name="contact_phone" 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="+1 234 567 890">
+      </div>
+    </div>
+
+    <!-- Project Info -->
+    <div class="space-y-1">
+      <label class="block text-sm font-semibold text-slate-700">Project Title *</label>
+      <input type="text" name="project_title" required 
+        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+        placeholder="e.g. Solar Wells for Rural Kenya">
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Sector *</label>
+        <select name="sector" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80">
+          <option value="">Select a sector</option>
+          <option value="Environment">Environment</option>
+          <option value="Education">Education</option>
+          <option value="Health">Health</option>
+          <option value="Poverty Alleviation">Poverty Alleviation</option>
+          <option value="Technology">Technology</option>
+          <option value="Arts & Culture">Arts & Culture</option>
+          <option value="General">General</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Budget Requested (USD) *</label>
+        <input type="number" name="budget" required min="1" max="1000000" 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="50000">
+        <p class="text-xs text-slate-400">Maximum budget: $1,000,000</p>
+      </div>
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Timeline *</label>
+        <input type="text" name="timeline" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="e.g. 12 months">
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Location *</label>
+        <input type="text" name="location" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="e.g. Tana River County, Kenya">
+      </div>
+      <div class="space-y-1">
+        <label class="block text-sm font-semibold text-slate-700">Beneficiaries *</label>
+        <input type="text" name="beneficiaries" required 
+          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+          placeholder="e.g. 5,000 rural residents">
+      </div>
+    </div>
+
+    <div class="space-y-1">
+      <label class="block text-sm font-semibold text-slate-700">Previous Funding</label>
+      <input type="text" name="previous_funding" 
+        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80"
+        placeholder="None or previous grants">
+    </div>
+
+    <div class="space-y-1">
+      <label class="block text-sm font-semibold text-slate-700">Project Description *</label>
+      <textarea name="description" required rows="6" minlength="20" 
+        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition bg-white/80 resize-none"
+        placeholder="Describe your project in detail (minimum 20 characters)..."></textarea>
+      <p class="text-xs text-slate-400">Description must be at least 20 characters.</p>
+    </div>
+
+    <!-- Response Area -->
+    <div id="responseArea" class="hidden rounded-xl p-5 border" aria-live="polite" role="status"></div>
+
+    <!-- Submit Button -->
+    <button type="submit" id="submitBtn" 
+      class="w-full gradient-bg text-white font-bold py-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg">
+      <span id="btnText">Submit Application</span>
+      <svg id="spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+    </button>
+  </form>
+
+  <!-- Success Result -->
+  <div id="successResult" class="hidden px-8 pb-8">
+    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-8 text-center">
+      <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold text-emerald-800 mb-2">Application Submitted Successfully!</h3>
+      <p id="successMessage" class="text-emerald-700 mb-6"></p>
+      
+      <div class="bg-white border border-emerald-200 rounded-xl p-6 text-left space-y-3">
+        <div class="flex justify-between items-center border-b border-slate-100 py-2">
+          <span class="text-slate-500">Application ID</span>
+          <span id="successAppId" class="font-bold text-slate-800 font-mono text-lg">N/A</span>
+        </div>
+        <div class="flex justify-between items-center border-b border-slate-100 py-2">
+          <span class="text-slate-500">Status</span>
+          <span id="successStatus" class="font-bold text-emerald-600">N/A</span>
+        </div>
+        <div id="successExtraFields" class="space-y-2"></div>
+      </div>
+      
+      <button onclick="resetForm()" class="mt-6 px-6 py-3 bg-emerald-100 text-emerald-700 rounded-xl hover:bg-emerald-200 transition font-semibold">
+        Submit Another Application
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const WEBHOOK_URL = 'https://grant-n8n-proxy.mohummadsultan0.workers.dev/app-x7k9m2p-2026-secure';
+const WEBHOOK_SECRET = 'grant-prod-2026-secure-key';
+const REQUEST_TIMEOUT = 120000;
+const MAX_RETRIES = 2;
+
+// ═══════════════════════════════════════════════════════
+// ERROR REPORTING - أ
+// ═══════════════════════════════════════════════════════
+const ERROR_WEBHOOK = 'https://grant-n8n-proxy.mohummadsultan0.workers.dev/error-report-x7k9m2p-2026';
+
+// HMAC ADDED
+async function generateHMACSignature(bodyString) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(WEBHOOK_SECRET),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(bodyString));
+  return Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function reportError(errorType, errorMessage, details = {}) {
+  try {
+    const payload = {
+      error_message: errorMessage,
+      error_description: details.description || '',
+      node_name: 'Frontend_' + (errorType || 'UNKNOWN'),
+      workflow_name: 'Grant Application Portal',
+      node_type: 'browser',
+      user_email: details.email || document.querySelector('[name="email"]')?.value || 'Unknown',
+      application_id: details.applicationId || 'N/A',
+      request_url: window.location.href,
+      request_method: 'CLIENT_ERROR',
+      request_payload: details,
+      environment: 'production'
+    };
+
+    const res = await fetch(ERROR_WEBHOOK, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Webhook-Secret': WEBHOOK_SECRET
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      console.error('Error webhook failed:', res.status);
+    }
+  } catch (e) {
+    console.error('Failed to report error:', e);
+  }
+}
+
+// كشف نفاذ رصيد AI
+function detectAIError(response) {
+  if (response.status === 429 || response.status === 403) {
+    reportError('AI_SERVICE', 'AI API quota exceeded or rate limited', {
+      description: 'Gemini API returned ' + response.status,
+      status: response.status
+    });
+    return true;
+  }
+  if (response.status >= 500 && response.status < 600) {
+    reportError('AI_SERVICE', 'AI service unavailable', {
+      description: 'Gemini server error: ' + response.status
+    });
+    return true;
+  }
+  return false;
+}
+
+// كشف أخطاء النظام
+window.addEventListener('error', function(event) {
+  reportError('UNKNOWN', event.message, {
+    description: event.filename + ':' + event.lineno,
+    stack: event.error?.stack
+  });
+});
+
+window.addEventListener('unhandledrejection', function(event) {
+  reportError('UNKNOWN', 'Unhandled Promise Rejection', {
+    description: event.reason?.message || String(event.reason),
+    stack: event.reason?.stack
+  });
+});
+
+function resetForm() {
+  if (!confirm('Are you sure? All entered data will be cleared.')) return;
+  document.getElementById('grantForm').reset();
+  document.getElementById('grantForm').classList.remove('hidden');
+  document.getElementById('successResult').classList.add('hidden');
+  hideResponse();
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('spinner').classList.add('hidden');
+  document.getElementById('btnText').textContent = 'Submit Application';
+}
+
+function validateForm(data) {
+  const errors = [];
+  if (!data.name || data.name.trim().length < 2) errors.push('Full name is required (min 2 characters)');
+  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.push('Valid email address is required');
+  if (!data.project_title || data.project_title.trim().length < 3) errors.push('Project title is required');
+  if (!data.budget || parseFloat(data.budget) <= 0) errors.push('Budget must be greater than 0');
+  if (parseFloat(data.budget) > 1000000) errors.push('Budget cannot exceed $1,000,000');
+  if (!data.description || data.description.trim().length < 20) errors.push('Description must be at least 20 characters');
+  if (!data.organization || data.organization.trim().length < 2) errors.push('Organization name is required (min 2 characters)');
+  if (!data.sector || data.sector === '') errors.push('Please select a sector');
+  if (!data.location || data.location.trim().length < 2) errors.push('Project location is required');
+  if (!data.beneficiaries || data.beneficiaries.trim().length < 2) errors.push('Beneficiaries field is required');
+  if (!data.timeline || data.timeline.trim().length < 2) errors.push('Project timeline is required');
+  return errors;
+}
+
+function formatDate(value) {
+  if (!value) return 'N/A';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function getResponseData(data) {
+  if (!data || typeof data !== 'object') return {};
+  const merged = { ...data };
+  const nested = [data.data, data.result, data.json, data.payload].filter(v => v && typeof v === 'object' && !Array.isArray(v));
+  nested.forEach(source => {
+    Object.keys(source).forEach(key => {
+      if (merged[key] === undefined) merged[key] = source[key];
+    });
+  });
+  return merged;
+}
+
+function getPrimaryMessage(data, fallback) {
+  const source = getResponseData(data);
+  const message = source.message || source.reason || source.next_steps || source.status || source.error_code;
+  return message || fallback;
+}
+
+function mergeMessages(primary, fallback) {
+  if (!primary) return fallback;
+  if (!fallback) return primary;
+  if (primary === fallback) return primary;
+  return primary + ' ' + fallback;
+}
+
+function getDetailSource(data, extra = {}) {
+  const base = (data && typeof data === 'object') ? { ...data } : {};
+  const nestedKeys = ['data', 'result', 'payload', 'json'];
+
+  for (const key of nestedKeys) {
+    const nested = base[key];
+    if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+      for (const [nestedKey, nestedValue] of Object.entries(nested)) {
+        if (base[nestedKey] === undefined) base[nestedKey] = nestedValue;
+      }
+      delete base[key];
+    }
+  }
+
+  for (const [extraKey, extraValue] of Object.entries(extra)) {
+    if (extraValue !== undefined) base[extraKey] = extraValue;
+  }
+
+  return base;
+}
+
+function renderRejectionBlock(data) {
+  const check = (data && typeof data === 'object' && data.rejection_check) ? data.rejection_check : {};
+  const totalRejections = (check.total_rejections ?? data.total_rejections);
+  const effectiveRejections = (check.effective_rejections ?? data.effective_rejections);
+  const daysRemaining = (check.days_remaining ?? data.days_remaining);
+  const nextEligibleDate = (check.next_eligible_date ?? data.next_eligible_date);
+  const blockMessage = check.block_message || data.block_message;
+  const rejectionCount = (effectiveRejections ?? totalRejections);
+
+  if (blockMessage) {
+    return {
+      title: 'Application Blocked',
+      body: blockMessage,
+      details: {
+        total_rejections: totalRejections,
+        effective_rejections: effectiveRejections,
+        days_remaining: daysRemaining,
+        next_eligible_date: nextEligibleDate
+      }
+    };
+  }
+
+  const parts = [];
+  if (rejectionCount !== undefined && rejectionCount !== null) {
+    parts.push('You have been rejected ' + rejectionCount + ' times.');
+  }
+  if (daysRemaining !== undefined && daysRemaining !== null && daysRemaining > 0) {
+    parts.push('You can reapply after ' + daysRemaining + ' days.');
+  }
+  if (nextEligibleDate) {
+    parts.push('Re-apply after: ' + formatDate(nextEligibleDate) + '.');
+  }
+
+  return {
+    title: 'Application Blocked',
+    body: parts.join(' '),
+    details: {
+      total_rejections: totalRejections,
+      effective_rejections: effectiveRejections,
+      days_remaining: daysRemaining,
+      next_eligible_date: nextEligibleDate
+    }
+  };
+}
+// ═══════════════════════════════════════════════════════
+function renderUiBlock(ui) {
+  const variants = {
+    success:  { card: 'bg-emerald-50 border-emerald-200', icon: '<svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>', titleColor: 'text-emerald-800', bodyColor: 'text-emerald-700' },
+    error:    { card: 'bg-red-50 border-red-200',     icon: '<svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>', titleColor: 'text-red-800', bodyColor: 'text-red-700' },
+    warning:  { card: 'bg-amber-50 border-amber-200', icon: '<svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>', titleColor: 'text-amber-800', bodyColor: 'text-amber-700' },
+    info:     { card: 'bg-blue-50 border-blue-200',   icon: '<svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>', titleColor: 'text-blue-800', bodyColor: 'text-blue-700' },
+    blocked:  { card: 'bg-red-900 border-red-700',    icon: '<svg class="w-10 h-10 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636L5.636 18.364M6.343 6.343a8 8 0 1111.314 11.314A8 8 0 016.343 6.343z"></path></svg>', titleColor: 'text-red-100', bodyColor: 'text-red-200' }
+  };
+
+  const v = variants[ui.variant] || variants.info;
+
+  let detailsHtml = '';
+  if (ui.details && typeof ui.details === 'object') {
+    const entries = Array.isArray(ui.details) 
+      ? ui.details
+      : Object.entries(ui.details).map(([k, v]) => ({ label: k.replace(/_/g, ' '), value: v }));
+    
+    detailsHtml = entries.map(({ label, value }) => `
+      <div class="flex justify-between border-b border-slate-100 py-2 last:border-0">
+        <span class="text-slate-500 text-sm">${escHtml(String(label))}</span>
+        <span class="text-slate-700 text-sm font-mono text-right">${escHtml(String(value ?? ''))}</span>
+      </div>`).join('');
+  }
+
+  let actionsHtml = '';
+  if (Array.isArray(ui.actions)) {
+    actionsHtml = ui.actions.map(action => {
+      const styleMap = {
+        primary:   'bg-blue-600 hover:bg-blue-700 text-white',
+        success:   'bg-emerald-600 hover:bg-emerald-700 text-white',
+        danger:    'bg-red-600 hover:bg-red-700 text-white',
+        warning:   'bg-amber-500 hover:bg-amber-600 text-white',
+        secondary: 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+      };
+      const cls = styleMap[action.style] || styleMap.primary;
+      const onclick = action.url 
+        ? `window.location.href='${escHtml(action.url)}'`
+        : action.reload 
+          ? 'window.location.reload()'
+          : action.close
+            ? 'window.close()'
+            : '';
+      return `<button onclick="${onclick}" class="px-5 py-2 rounded-xl font-bold text-sm transition shadow ${cls}">${escHtml(action.label)}</button>`;
+    }).join('');
+  }
+
+  return `
+    <div class="${v.card} border-2 rounded-xl p-6">
+      <div class="flex items-start gap-3">
+        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-white/80 flex items-center justify-center shadow">
+          ${v.icon}
+        </div>
+        <div class="flex-1 min-w-0">
+          <h4 class="font-bold text-base ${v.titleColor}">${escHtml(ui.title || '')}</h4>
+          <p class="text-sm mt-1 ${v.bodyColor}">${escHtml(ui.message || '')}</p>
+          ${detailsHtml ? `<div class="mt-3 bg-white/70 rounded-lg p-3 border border-slate-200/60">${detailsHtml}</div>` : ''}
+          ${ui.note ? `<div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3"><p class="text-amber-700 text-sm">${escHtml(ui.note)}</p></div>` : ''}
+          ${actionsHtml ? `<div class="mt-3 flex gap-2 flex-wrap">${actionsHtml}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+function showResponse(data) {
+  const area = document.getElementById('responseArea');
+  area.classList.remove('hidden');
+
+  if (typeof data === 'string') {
+    try { data = JSON.parse(data); } catch (e) { data = { success: false, error: true, message: data }; }
+  }
+  if (!data || typeof data !== 'object') {
+    data = { success: false, error: true, message: 'Invalid response from server' };
+  }
+
+  // ─── ui block يأخذ الأولوية الكاملة ───
+  if (data.ui && typeof data.ui === 'object') {
+    area.innerHTML = renderUiBlock(data.ui);
+    area.className = 'rounded-xl';
+    area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+
+  const rejectionCheck = (data && typeof data === 'object' && data.rejection_check) ? data.rejection_check : {};
+  const derivedTotalRejections = (rejectionCheck.total_rejections ?? data.total_rejections);
+  const derivedEffectiveRejections = (rejectionCheck.effective_rejections ?? data.effective_rejections);
+  const derivedDaysRemaining = (rejectionCheck.days_remaining ?? data.days_remaining);
+  const derivedNextEligible = (rejectionCheck.next_eligible_date ?? data.next_eligible_date);
+  const derivedBlockMessage = rejectionCheck.block_message || data.block_message;
+
+  const isSuccess = data.success === true;
+  const isRejection = data.success === false && (data.status === 'rejected' || data.rejection_code || data.stage === 'deep_analysis');
+  const isRejectionLimit = data.error_code === 'REJECTION_LIMIT_REACHED' || rejectionCheck.is_blocked === true;
+  const isCooldown = data.error_code === 'COOLDOWN_PERIOD_ACTIVE';
+  const isError = data.error === true || (data.success === false && !isRejection && !isCooldown && !isRejectionLimit);
+
+  const primaryMessage = getPrimaryMessage(data, '');
+
+  if (isError) {
+    document.getElementById('grantForm').classList.remove('hidden');
+    document.getElementById('successResult').classList.add('hidden');
+  }
+
+  let cardClass, iconSvg, titleColor, bodyColor, title, body;
+
+  if (isRejectionLimit) {
+    const blocked = renderRejectionBlock(data);
+    cardClass = 'bg-red-900 border-red-700';
+    iconSvg = '<svg class="w-6 h-6 text-red-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636L5.636 18.364M6.343 6.343a8 8 0 1111.314 11.314A8 8 0 016.343 6.343z"></path></svg>';
+    titleColor = 'text-red-100';
+    bodyColor = 'text-red-200';
+    title = blocked.title;
+    body = blocked.body;
+  } else if (isCooldown) {
+    const cooldownDate = data.eligible_after || data.next_reapply_date || derivedNextEligible || data.next_eligible_date;
+    const cooldownDays = (derivedDaysRemaining !== undefined && derivedDaysRemaining !== null) ? derivedDaysRemaining : data.days_remaining;
+    const daysText = (cooldownDays !== undefined && cooldownDays !== null) ? ' Days remaining: ' + cooldownDays + '.' : '';
+
+    cardClass = 'bg-amber-50 border-amber-300';
+    iconSvg = '<svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    titleColor = 'text-amber-800';
+    bodyColor = 'text-amber-700';
+    if (data.rejection_reason === 'previous_grant_approved_within_3_months') {
+      title = 'Active Grant Exists';
+      const fallbackBody = `You have a previously approved grant (ID: ${data.previous_application_id || 'N/A'}). You may reapply after: ${formatDate(data.eligible_after || data.next_reapply_date || derivedNextEligible || 'N/A')}.${daysText}`;
+      body = mergeMessages(primaryMessage, fallbackBody);
+    } else {
+      title = 'Cooldown Period Active';
+      const fallbackBody = 'You may reapply after: ' + formatDate(cooldownDate) + '.' + daysText;
+      body = mergeMessages(primaryMessage, fallbackBody);
+    }
+  } else if (isRejection) {
+    cardClass = 'bg-red-50 border-red-300';
+    iconSvg = '<svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+    titleColor = 'text-red-800';
+    bodyColor = 'text-red-700';
+    title = 'Application Rejected';
+    body = getPrimaryMessage(data, 'Your application was not accepted.');
+  } else if (isError) {
+    cardClass = 'bg-red-50 border-red-300';
+    iconSvg = '<svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    titleColor = 'text-red-800';
+    bodyColor = 'text-red-600';
+    title = 'System Error';
+    body = getPrimaryMessage(data, 'A technical error occurred. Our support team has been notified. Please try again later.');
+  } else {
+    cardClass = 'bg-blue-50 border-blue-300';
+    iconSvg = '<svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    titleColor = 'text-blue-800';
+    bodyColor = 'text-blue-700';
+    title = data.message || 'Processing...';
+    body = getPrimaryMessage(data, '');
+  }
+
+  let detailsHtml = '';
+  const detailSource = getDetailSource(data, {
+    total_rejections: derivedTotalRejections,
+    effective_rejections: derivedEffectiveRejections,
+    days_remaining: derivedDaysRemaining,
+    next_eligible_date: derivedNextEligible,
+    block_message: derivedBlockMessage
+  });
+
+  const priorityKeys = ['application_id', 'status', 'error_code', 'rejection_code', 'stage', 
+    'total_rejections', 'effective_rejections', 'days_remaining', 
+    'next_eligible_date', 'eligible_after', 'next_reapply_date',
+    'previous_application_id', 'previous_approved_application',
+    'rejected_at', 'scored_at', 'tier', 'total_score', 'block_message'];
+  const allKeys = [...new Set([...priorityKeys, ...Object.keys(detailSource)])];
+  const skipKeys = ['success', 'error', 'message', 'reason', 'next_steps', 'raw_response', 'html', 'content', 'report', 'body', 'ui'];
+
+  for (const key of allKeys) {
+    if (detailSource[key] === undefined || detailSource[key] === null) continue;
+    if (skipKeys.includes(key)) continue;
+
+    let value = detailSource[key];
+    let label = translateKey(key);
+
+    if (key.includes('date') || key.includes('_at')) {
+      value = formatDate(value);
+    }
+    if (key.includes('amount') || key.includes('budget') || key.includes('funding')) {
+      const num = parseFloat(value);
+      if (!isNaN(num) && num > 0) value = '$' + num.toLocaleString();
+    }
+    if (typeof value === 'object') {
+      value = JSON.stringify(value).substring(0, 200);
+    }
+
+    const isImportant = ['error_code', 'rejection_code', 'total_rejections', 'days_remaining'].includes(key);
+    const valueClass = isImportant ? 'font-bold text-red-700' : 'text-slate-700';
+
+    detailsHtml += `
+      <div class="flex justify-between border-b border-slate-100 py-2 last:border-0">
+        <span class="text-slate-500 text-sm">${escHtml(label)}</span>
+        <span class="${valueClass} text-sm font-mono text-right">${escHtml(String(value))}</span>
+      </div>`;
+  }
+
+  area.className = `rounded-xl p-5 border-2 ${cardClass}`;
+  area.innerHTML = `
+    <div class="flex items-start gap-3">
+      <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shadow">
+        ${iconSvg}
+      </div>
+      <div class="flex-1 min-w-0">
+        <h4 class="font-bold text-base ${titleColor}">${escHtml(title)}</h4>
+        <p class="text-sm mt-1 ${bodyColor}">${escHtml(body)}</p>
+        ${detailsHtml ? `<div class="mt-3 bg-white/70 rounded-lg p-3 border border-slate-200/60">${detailsHtml}</div>` : ''}
+        ${data.next_steps ? `<div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3"><p class="text-amber-800 text-sm font-bold">Next steps:</p><p class="text-amber-700 text-sm mt-1">${escHtml(data.next_steps)}</p></div>` : ''}
+      </div>
+    </div>
+  `;
+  area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function translateKey(key) {
+  const translations = {
+    application_id: 'Application ID',
+    status: 'Status',
+    error_code: 'Error Code',
+    rejection_code: 'Rejection Code',
+    stage: 'Stage',
+    total_rejections: 'Total Rejections',
+    effective_rejections: 'Effective Rejections',
+    days_remaining: 'Days Remaining',
+    next_eligible_date: 'Next Eligible Date',
+    eligible_after: 'Eligible After',
+    next_reapply_date: 'Next Reapply Date',
+    previous_application_id: 'Previous Application ID',
+    previous_approved_application: 'Previous Approved Application',
+    rejected_at: 'Rejected At',
+    scored_at: 'Scored At',
+    tier: 'Tier',
+    total_score: 'Total Score',
+    committee_notified: 'Committee Notified',
+    applicant_notified: 'Applicant Notified',
+    workflow_version: 'Workflow Version',
+    clarification_round: 'Clarification Round'
+  };
+  return translations[key] || key.replace(/_/g, ' ');
+}
+
+function hideResponse() {
+  document.getElementById('responseArea').classList.add('hidden');
+  document.getElementById('responseArea').innerHTML = '';
+}
+
+function renderSuccess(data, payload) {
+  document.getElementById('grantForm').classList.add('hidden');
+  document.getElementById('successResult').classList.remove('hidden');
+
+  const status = (data.status || '').toLowerCase();
+  document.getElementById('successAppId').textContent = data.application_id || 'N/A';
+  
+  let statusText = data.status || 'N/A';
+  let statusClass = 'text-emerald-600';
+  
+  if (status === 'awaiting_clarification') {
+    statusText = 'Awaiting Clarification';
+    document.getElementById('successMessage').textContent = 'We received your application. Please check your email for clarification questions.';
+  } else if (status === 'review') {
+    statusText = 'In Review';
+    document.getElementById('successMessage').textContent = 'Your application was sent to the review committee.';
+  } else if (status === 'priority') {
+    statusText = 'High Priority';
+    document.getElementById('successMessage').textContent = 'Your application was flagged as high priority.';
+  } else {
+    document.getElementById('successMessage').textContent = 'Your application has been received.';
+  }
+  
+  document.getElementById('successStatus').textContent = statusText;
+  document.getElementById('successStatus').className = `font-bold ${statusClass}`;
+  localStorage.setItem('grantUserEmail', payload.email || '');
+  localStorage.setItem('grantApplicationId', data.application_id || '');
+
+  const extraContainer = document.getElementById('successExtraFields');
+  extraContainer.innerHTML = '';
+  const skipKeys = ['success', 'error', 'error_code', 'application_id', 'status', 'message'];
+  
+  Object.entries(data)
+    .filter(([k]) => !skipKeys.includes(k))
+    .forEach(([key, value]) => {
+      const row = document.createElement('div');
+      row.className = 'flex justify-between items-start border-b border-slate-100 py-2 last:border-0';
+      const label = translateKey(key);
+      const display = (value !== null && value !== undefined) ? String(value) : 'N/A';
+      row.innerHTML = `<span class="text-slate-500 mr-4">${escHtml(label)}</span><span class="font-bold text-slate-800 text-right break-all">${escHtml(display)}</span>`;
+      extraContainer.appendChild(row);
+    });
+}
+
+document.getElementById('grantForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const btn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+  btnText.textContent = 'Submitting...';
+  hideResponse();
+
+  const formData = new FormData(e.target);
+  const payload = {};
+  formData.forEach((v, k) => payload[k] = v);
+  payload.budget = parseFloat(payload.budget) || 0;
+
+  const validationErrors = validateForm(payload);
+  if (validationErrors.length > 0) {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+    btnText.textContent = 'Submit Application';
+    showResponse({
+      success: false,
+      error: true,
+      error_code: 'VALIDATION_ERROR',
+      message: 'Please fix the following:',
+      reason: '- ' + validationErrors.join('\n- '),
+      status: 'validation_failed'
+    });
+    return;
+  }
+
+async function trySubmit(attempt = 1) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+  try {
+    const bodyString = JSON.stringify(payload);
+    const signatureHex = await generateHMACSignature(bodyString);
+
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json', 
+        'X-Webhook-Secret': WEBHOOK_SECRET,
+        'x-webhook-signature': signatureHex
+      },
+      body: bodyString,
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+
+    // ─── قراءة الـ body مرة واحدة فقط ───
+    const text = await res.text();
+    let data = {};
+    
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch(e) {
+      data = {
+        success: false,
+        error: true,
+        error_code: 'INVALID_RESPONSE',
+        message: 'Server returned an invalid response. Please try again later.'
+      };
+    }
+
+    // ─── إذا الـ server أرجع error HTTP، نعرض رسالته مباشرة ───
+    if (!res.ok) {
+      if (res.status >= 500) {
+        reportError('SERVER', `HTTP ${res.status}`, {
+          description: text.substring(0, 200),
+          status: res.status,
+          payload: payload
+        });
+      }
+      // نعرض رسالة الـ server مباشرة بدون hardcoding
+      if (!data.success && (data.message || data.error_code)) {
+        return { ok: false, data: data };
+      }
+      return { ok: false, data: { 
+        success: false, 
+        error: true, 
+        error_code: `HTTP_${res.status}`,
+        message: `Server error: ${res.status}`
+      }};
+    }
+
+    return { ok: true, data: data };
+
+  } catch (err) {
+    clearTimeout(timeoutId);
+
+    reportError('NETWORK', err.message || 'Network error', {
+      description: err.stack || String(err),
+      payload: payload
+    });
+
+    if (attempt < MAX_RETRIES && (err.name === 'AbortError' || err.name === 'TypeError')) {
+      btnText.textContent = `Retrying (${attempt}/${MAX_RETRIES})...`;
+      await new Promise(r => setTimeout(r, 2500));
+      return trySubmit(attempt + 1);
+    }
+
+    return { 
+      ok: false, 
+      data: { 
+        success: false, 
+        error: true, 
+        error_code: err.name || 'NETWORK_ERROR',
+        message: err.name === 'AbortError' 
+          ? 'Request timed out. The server is taking too long. Please try again later.' 
+          : (err.message || 'Network connection failed.')
+      } 
+    };
+  }
+}
+
+  const result = await trySubmit(1);
+  const data = result.data;
+
+  // ═══════════════════════════════════════════════════════
+
+
+  if (data.success === true) {
+    renderSuccess(data, payload);
+    return;
+  }
+
+  showResponse(data);
+
+  btn.disabled = false;
+  spinner.classList.add('hidden');
+  btnText.textContent = 'Submit Application';
+});
+
+function escHtml(t) {
+  if (!t) return '';
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
