@@ -171,18 +171,20 @@
 </div>
 
 <script>
-
+// ═══════════════════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════════════════
 const WEBHOOK_URL = 'https://grant-n8n-proxy.mohummadsultan0.workers.dev/app-x7k9m2p-2026-secure';
 const WEBHOOK_SECRET = 'grant-prod-2026-secure-key';
 const REQUEST_TIMEOUT = 120000;
 const MAX_RETRIES = 2;
+const FORM_DRAFT_KEY = 'grantApplicationDraft';
 
 // ═══════════════════════════════════════════════════════
-// ERROR REPORTING - أ
+// ERROR REPORTING
 // ═══════════════════════════════════════════════════════
 const ERROR_WEBHOOK = 'https://grant-n8n-proxy.mohummadsultan0.workers.dev/error-report-x7k9m2p-2026';
 
-// HMAC ADDED
 async function generateHMACSignature(bodyString) {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
@@ -231,7 +233,6 @@ async function reportError(errorType, errorMessage, details = {}) {
   }
 }
 
-// كشف نفاذ رصيد AI
 function detectAIError(response) {
   if (response.status === 429 || response.status === 403) {
     reportError('AI_SERVICE', 'AI API quota exceeded or rate limited', {
@@ -249,7 +250,6 @@ function detectAIError(response) {
   return false;
 }
 
-// كشف أخطاء النظام
 window.addEventListener('error', function(event) {
   reportError('UNKNOWN', event.message, {
     description: event.filename + ':' + event.lineno,
@@ -264,31 +264,14 @@ window.addEventListener('unhandledrejection', function(event) {
   });
 });
 
-function resetForm() {
-  if (!confirm('Are you sure? All entered data will be cleared.')) return;
-  document.getElementById('grantForm').reset();
-  document.getElementById('grantForm').classList.remove('hidden');
-  document.getElementById('successResult').classList.add('hidden');
-  hideResponse();
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('spinner').classList.add('hidden');
-  document.getElementById('btnText').textContent = 'Submit Application';
-}
-
-function validateForm(data) {
-  const errors = [];
-  if (!data.name || data.name.trim().length < 2) errors.push('Full name is required (min 2 characters)');
-  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.push('Valid email address is required');
-  if (!data.project_title || data.project_title.trim().length < 3) errors.push('Project title is required');
-  if (!data.budget || parseFloat(data.budget) <= 0) errors.push('Budget must be greater than 0');
-  if (parseFloat(data.budget) > 1000000) errors.push('Budget cannot exceed $1,000,000');
-  if (!data.description || data.description.trim().length < 20) errors.push('Description must be at least 20 characters');
-  if (!data.organization || data.organization.trim().length < 2) errors.push('Organization name is required (min 2 characters)');
-  if (!data.sector || data.sector === '') errors.push('Please select a sector');
-  if (!data.location || data.location.trim().length < 2) errors.push('Project location is required');
-  if (!data.beneficiaries || data.beneficiaries.trim().length < 2) errors.push('Beneficiaries field is required');
-  if (!data.timeline || data.timeline.trim().length < 2) errors.push('Project timeline is required');
-  return errors;
+// ═══════════════════════════════════════════════════════
+// UTILITY FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function escHtml(t) {
+  if (!t) return '';
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
 }
 
 function formatDate(value) {
@@ -296,6 +279,33 @@ function formatDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return String(value);
   return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function translateKey(key) {
+  const translations = {
+    application_id: 'Application ID',
+    status: 'Status',
+    error_code: 'Error Code',
+    rejection_code: 'Rejection Code',
+    stage: 'Stage',
+    total_rejections: 'Total Rejections',
+    effective_rejections: 'Effective Rejections',
+    days_remaining: 'Days Remaining',
+    next_eligible_date: 'Next Eligible Date',
+    eligible_after: 'Eligible After',
+    next_reapply_date: 'Next Reapply Date',
+    previous_application_id: 'Previous Application ID',
+    previous_approved_application: 'Previous Approved Application',
+    rejected_at: 'Rejected At',
+    scored_at: 'Scored At',
+    tier: 'Tier',
+    total_score: 'Total Score',
+    committee_notified: 'Committee Notified',
+    applicant_notified: 'Applicant Notified',
+    workflow_version: 'Workflow Version',
+    clarification_round: 'Clarification Round'
+  };
+  return translations[key] || key.replace(/_/g, ' ');
 }
 
 function getResponseData(data) {
@@ -323,72 +333,34 @@ function mergeMessages(primary, fallback) {
   return primary + ' ' + fallback;
 }
 
-function getDetailSource(data, extra = {}) {
-  const base = (data && typeof data === 'object') ? { ...data } : {};
-  const nestedKeys = ['data', 'result', 'payload', 'json'];
-
-  for (const key of nestedKeys) {
-    const nested = base[key];
-    if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
-      for (const [nestedKey, nestedValue] of Object.entries(nested)) {
-        if (base[nestedKey] === undefined) base[nestedKey] = nestedValue;
-      }
-      delete base[key];
-    }
-  }
-
-  for (const [extraKey, extraValue] of Object.entries(extra)) {
-    if (extraValue !== undefined) base[extraKey] = extraValue;
-  }
-
-  return base;
-}
-
-function renderRejectionBlock(data) {
-  const check = (data && typeof data === 'object' && data.rejection_check) ? data.rejection_check : {};
-  const totalRejections = (check.total_rejections ?? data.total_rejections);
-  const effectiveRejections = (check.effective_rejections ?? data.effective_rejections);
-  const daysRemaining = (check.days_remaining ?? data.days_remaining);
-  const nextEligibleDate = (check.next_eligible_date ?? data.next_eligible_date);
-  const blockMessage = check.block_message || data.block_message;
-  const rejectionCount = (effectiveRejections ?? totalRejections);
-
-  if (blockMessage) {
-    return {
-      title: 'Application Blocked',
-      body: blockMessage,
-      details: {
-        total_rejections: totalRejections,
-        effective_rejections: effectiveRejections,
-        days_remaining: daysRemaining,
-        next_eligible_date: nextEligibleDate
-      }
-    };
-  }
-
-  const parts = [];
-  if (rejectionCount !== undefined && rejectionCount !== null) {
-    parts.push('You have been rejected ' + rejectionCount + ' times.');
-  }
-  if (daysRemaining !== undefined && daysRemaining !== null && daysRemaining > 0) {
-    parts.push('You can reapply after ' + daysRemaining + ' days.');
-  }
-  if (nextEligibleDate) {
-    parts.push('Re-apply after: ' + formatDate(nextEligibleDate) + '.');
-  }
-
-  return {
-    title: 'Application Blocked',
-    body: parts.join(' '),
-    details: {
-      total_rejections: totalRejections,
-      effective_rejections: effectiveRejections,
-      days_remaining: daysRemaining,
-      next_eligible_date: nextEligibleDate
-    }
-  };
-}
 // ═══════════════════════════════════════════════════════
+// FORM VALIDATION
+// ═══════════════════════════════════════════════════════
+function validateForm(data) {
+  const errors = [];
+  if (!data.name || data.name.trim().length < 2) errors.push('Full name is required (min 2 characters)');
+  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.push('Valid email address is required');
+  if (!data.project_title || data.project_title.trim().length < 3) errors.push('Project title is required');
+  if (!data.budget || parseFloat(data.budget) <= 0) errors.push('Budget must be greater than 0');
+  if (parseFloat(data.budget) > 1000000) errors.push('Budget cannot exceed $1,000,000');
+  if (!data.description || data.description.trim().length < 20) errors.push('Description must be at least 20 characters');
+  if (!data.organization || data.organization.trim().length < 2) errors.push('Organization name is required (min 2 characters)');
+  if (!data.sector || data.sector === '') errors.push('Please select a sector');
+  if (!data.location || data.location.trim().length < 2) errors.push('Project location is required');
+  if (!data.beneficiaries || data.beneficiaries.trim().length < 2) errors.push('Beneficiaries field is required');
+  if (!data.timeline || data.timeline.trim().length < 2) errors.push('Project timeline is required');
+  return errors;
+}
+
+// ═══════════════════════════════════════════════════════
+// UI RENDERING
+// ═══════════════════════════════════════════════════════
+function hideResponse() {
+  const area = document.getElementById('responseArea');
+  area.classList.add('hidden');
+  area.innerHTML = '';
+}
+
 function renderUiBlock(ui) {
   const variants = {
     success:  { card: 'bg-emerald-50 border-emerald-200', icon: '<svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>', titleColor: 'text-emerald-800', bodyColor: 'text-emerald-700' },
@@ -451,6 +423,52 @@ function renderUiBlock(ui) {
       </div>
     </div>`;
 }
+
+function renderRejectionBlock(data) {
+  const check = (data && typeof data === 'object' && data.rejection_check) ? data.rejection_check : {};
+  const totalRejections = (check.total_rejections ?? data.total_rejections);
+  const effectiveRejections = (check.effective_rejections ?? data.effective_rejections);
+  const daysRemaining = (check.days_remaining ?? data.days_remaining);
+  const nextEligibleDate = (check.next_eligible_date ?? data.next_eligible_date);
+  const blockMessage = check.block_message || data.block_message;
+  const rejectionCount = (effectiveRejections ?? totalRejections);
+
+  if (blockMessage) {
+    return {
+      title: 'Application Blocked',
+      body: blockMessage,
+      details: {
+        total_rejections: totalRejections,
+        effective_rejections: effectiveRejections,
+        days_remaining: daysRemaining,
+        next_eligible_date: nextEligibleDate
+      }
+    };
+  }
+
+  const parts = [];
+  if (rejectionCount !== undefined && rejectionCount !== null) {
+    parts.push('You have been rejected ' + rejectionCount + ' times.');
+  }
+  if (daysRemaining !== undefined && daysRemaining !== null && daysRemaining > 0) {
+    parts.push('You can reapply after ' + daysRemaining + ' days.');
+  }
+  if (nextEligibleDate) {
+    parts.push('Re-apply after: ' + formatDate(nextEligibleDate) + '.');
+  }
+
+  return {
+    title: 'Application Blocked',
+    body: parts.join(' '),
+    details: {
+      total_rejections: totalRejections,
+      effective_rejections: effectiveRejections,
+      days_remaining: daysRemaining,
+      next_eligible_date: nextEligibleDate
+    }
+  };
+}
+
 function showResponse(data) {
   const area = document.getElementById('responseArea');
   area.classList.remove('hidden');
@@ -462,14 +480,12 @@ function showResponse(data) {
     data = { success: false, error: true, message: 'Invalid response from server' };
   }
 
-  // ─── ui block يأخذ الأولوية الكاملة ───
   if (data.ui && typeof data.ui === 'object') {
     area.innerHTML = renderUiBlock(data.ui);
     area.className = 'rounded-xl';
     area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     return;
   }
-
 
   const rejectionCheck = (data && typeof data === 'object' && data.rejection_check) ? data.rejection_check : {};
   const derivedTotalRejections = (rejectionCheck.total_rejections ?? data.total_rejections);
@@ -543,14 +559,7 @@ function showResponse(data) {
   }
 
   let detailsHtml = '';
-  const detailSource = getDetailSource(data, {
-    total_rejections: derivedTotalRejections,
-    effective_rejections: derivedEffectiveRejections,
-    days_remaining: derivedDaysRemaining,
-    next_eligible_date: derivedNextEligible,
-    block_message: derivedBlockMessage
-  });
-
+  const detailSource = { ...data };
   const priorityKeys = ['application_id', 'status', 'error_code', 'rejection_code', 'stage', 
     'total_rejections', 'effective_rejections', 'days_remaining', 
     'next_eligible_date', 'eligible_after', 'next_reapply_date',
@@ -604,38 +613,6 @@ function showResponse(data) {
   area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function translateKey(key) {
-  const translations = {
-    application_id: 'Application ID',
-    status: 'Status',
-    error_code: 'Error Code',
-    rejection_code: 'Rejection Code',
-    stage: 'Stage',
-    total_rejections: 'Total Rejections',
-    effective_rejections: 'Effective Rejections',
-    days_remaining: 'Days Remaining',
-    next_eligible_date: 'Next Eligible Date',
-    eligible_after: 'Eligible After',
-    next_reapply_date: 'Next Reapply Date',
-    previous_application_id: 'Previous Application ID',
-    previous_approved_application: 'Previous Approved Application',
-    rejected_at: 'Rejected At',
-    scored_at: 'Scored At',
-    tier: 'Tier',
-    total_score: 'Total Score',
-    committee_notified: 'Committee Notified',
-    applicant_notified: 'Applicant Notified',
-    workflow_version: 'Workflow Version',
-    clarification_round: 'Clarification Round'
-  };
-  return translations[key] || key.replace(/_/g, ' ');
-}
-
-function hideResponse() {
-  document.getElementById('responseArea').classList.add('hidden');
-  document.getElementById('responseArea').innerHTML = '';
-}
-
 function renderSuccess(data, payload) {
   document.getElementById('grantForm').classList.add('hidden');
   document.getElementById('successResult').classList.remove('hidden');
@@ -661,6 +638,7 @@ function renderSuccess(data, payload) {
   
   document.getElementById('successStatus').textContent = statusText;
   document.getElementById('successStatus').className = `font-bold ${statusClass}`;
+  
   localStorage.setItem('grantUserEmail', payload.email || '');
   localStorage.setItem('grantApplicationId', data.application_id || '');
 
@@ -680,6 +658,50 @@ function renderSuccess(data, payload) {
     });
 }
 
+function resetForm() {
+  if (!confirm('Are you sure? All entered data will be cleared.')) return;
+  document.getElementById('grantForm').reset();
+  document.getElementById('grantForm').classList.remove('hidden');
+  document.getElementById('successResult').classList.add('hidden');
+  hideResponse();
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('spinner').classList.add('hidden');
+  document.getElementById('btnText').textContent = 'Submit Application';
+}
+
+// ═══════════════════════════════════════════════════════
+// FORM DRAFT AUTO-SAVE
+// ═══════════════════════════════════════════════════════
+(function initDraft() {
+  const saved = sessionStorage.getItem(FORM_DRAFT_KEY);
+  if (!saved) return;
+  try {
+    const draft = JSON.parse(saved);
+    if (confirm('You have a saved draft. Would you like to restore it?')) {
+      Object.keys(draft).forEach(key => {
+        const field = document.querySelector(`[name="${key}"]`);
+        if (field) field.value = draft[key] || '';
+      });
+    }
+  } catch (e) {
+    sessionStorage.removeItem(FORM_DRAFT_KEY);
+  }
+})();
+
+let saveTimer;
+document.getElementById('grantForm').addEventListener('input', function() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    const formData = new FormData(document.getElementById('grantForm'));
+    const data = {};
+    formData.forEach((v, k) => data[k] = v);
+    sessionStorage.setItem(FORM_DRAFT_KEY, JSON.stringify(data));
+  }, 500);
+});
+
+// ═══════════════════════════════════════════════════════
+// MAIN SUBMIT HANDLER
+// ═══════════════════════════════════════════════════════
 document.getElementById('grantForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -713,156 +735,120 @@ document.getElementById('grantForm').addEventListener('submit', async (e) => {
     return;
   }
 
-async function trySubmit(attempt = 1) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+  async function trySubmit(attempt = 1) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-  try {
-    const bodyString = JSON.stringify(payload);
-    const signatureHex = await generateHMACSignature(bodyString);
-
-    const res = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json', 
-        'X-Webhook-Secret': WEBHOOK_SECRET,
-        'x-webhook-signature': signatureHex
-      },
-      body: bodyString,
-      signal: controller.signal
-    });
-    
-    clearTimeout(timeoutId);
-
-    // ─── قراءة الـ body مرة واحدة فقط ───
-    const text = await res.text();
-    let data = {};
-    
     try {
-      data = text ? JSON.parse(text) : {};
-    } catch(e) {
-      data = {
-        success: false,
-        error: true,
-        error_code: 'INVALID_RESPONSE',
-        message: 'Server returned an invalid response. Please try again later.'
+      const bodyString = JSON.stringify(payload);
+      const signatureHex = await generateHMACSignature(bodyString);
+
+      console.log('Sending to:', WEBHOOK_URL);
+      console.log('Payload:', payload);
+      console.log('Signature:', signatureHex);
+
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'X-Webhook-Secret': WEBHOOK_SECRET,
+          'x-webhook-signature': signatureHex
+        },
+        body: bodyString,
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+
+      console.log('Response status:', res.status);
+
+      const text = await res.text();
+      let data = {};
+      
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch(e) {
+        data = {
+          success: false,
+          error: true,
+          error_code: 'INVALID_RESPONSE',
+          message: 'Server returned an invalid response. Please try again later.'
+        };
+      }
+
+      console.log('Response data:', data);
+
+      if (!res.ok) {
+        if (res.status >= 500) {
+          reportError('SERVER', `HTTP ${res.status}`, {
+            description: text.substring(0, 200),
+            status: res.status,
+            payload: payload
+          });
+        }
+        if (!data.success && (data.message || data.error_code)) {
+          return { ok: false, data: data };
+        }
+        return { ok: false, data: { 
+          success: false, 
+          error: true, 
+          error_code: `HTTP_${res.status}`,
+          message: `Server error: ${res.status}`
+        }};
+      }
+
+      return { ok: true, data: data };
+
+    } catch (err) {
+      clearTimeout(timeoutId);
+
+      reportError('NETWORK', err.message || 'Network error', {
+        description: err.stack || String(err),
+        payload: payload
+      });
+
+      if (attempt < MAX_RETRIES && (err.name === 'AbortError' || err.name === 'TypeError')) {
+        btnText.textContent = `Retrying (${attempt}/${MAX_RETRIES})...`;
+        await new Promise(r => setTimeout(r, 2500));
+        return trySubmit(attempt + 1);
+      }
+
+      return { 
+        ok: false, 
+        data: { 
+          success: false, 
+          error: true, 
+          error_code: err.name || 'NETWORK_ERROR',
+          message: err.name === 'AbortError' 
+            ? 'Request timed out. The server is taking too long. Please try again later.' 
+            : (err.message || 'Network connection failed.')
+        } 
       };
     }
-
-    // ─── إذا الـ server أرجع error HTTP، نعرض رسالته مباشرة ───
-    if (!res.ok) {
-      if (res.status >= 500) {
-        reportError('SERVER', `HTTP ${res.status}`, {
-          description: text.substring(0, 200),
-          status: res.status,
-          payload: payload
-        });
-      }
-      // نعرض رسالة الـ server مباشرة بدون hardcoding
-      if (!data.success && (data.message || data.error_code)) {
-        return { ok: false, data: data };
-      }
-      return { ok: false, data: { 
-        success: false, 
-        error: true, 
-        error_code: `HTTP_${res.status}`,
-        message: `Server error: ${res.status}`
-      }};
-    }
-
-    return { ok: true, data: data };
-
-  } catch (err) {
-    clearTimeout(timeoutId);
-
-    reportError('NETWORK', err.message || 'Network error', {
-      description: err.stack || String(err),
-      payload: payload
-    });
-
-    if (attempt < MAX_RETRIES && (err.name === 'AbortError' || err.name === 'TypeError')) {
-      btnText.textContent = `Retrying (${attempt}/${MAX_RETRIES})...`;
-      await new Promise(r => setTimeout(r, 2500));
-      return trySubmit(attempt + 1);
-    }
-
-    return { 
-      ok: false, 
-      data: { 
-        success: false, 
-        error: true, 
-        error_code: err.name || 'NETWORK_ERROR',
-        message: err.name === 'AbortError' 
-          ? 'Request timed out. The server is taking too long. Please try again later.' 
-          : (err.message || 'Network connection failed.')
-      } 
-    };
   }
-}
 
- try {
-const result = await trySubmit(1);
-const data = result.data;
-if (data.success === true) {
-renderSuccess(data, payload);
-return;
-}
-showResponse(data);
-} catch (e) {
-showResponse({
-success: false,
-error: true,
-error_code: 'UNEXPECTED_ERROR',
-message: 'An unexpected error occurred. Please try again.'
+  try {
+    const result = await trySubmit(1);
+    const data = result.data;
+    if (data.success === true) {
+      renderSuccess(data, payload);
+      sessionStorage.removeItem(FORM_DRAFT_KEY);
+      return;
+    }
+    showResponse(data);
+  } catch (e) {
+    showResponse({
+      success: false,
+      error: true,
+      error_code: 'UNEXPECTED_ERROR',
+      message: 'An unexpected error occurred. Please try again.'
+    });
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+    btnText.textContent = 'Submit Application';
+  }
 });
-} finally {
-btn.disabled = false;
-spinner.classList.add('hidden');
-btnText.textContent = 'Submit Application';
-}
-
-function escHtml(t) {
-  if (!t) return '';
-  const d = document.createElement('div');
-  d.textContent = t;
-  return d.innerHTML;
-}
-  // ═══════════════════════════════════════════
-// FORM DRAFT AUTO-SAVE
-// ═══════════════════════════════════════════
-  const FORM_DRAFT_KEY = 'grantApplicationDraft';
-// Restore draft on page load
-(function restoreDraft() {
-const saved = sessionStorage.getItem(FORM_DRAFT_KEY);
-if (!saved) return;
-try {
-const draft = JSON.parse(saved);
-if (confirm('You have a saved draft. Would you like to restore it?')) {
-Object.keys(draft).forEach(key => {
-const field = document.querySelector(`[name="${key}"]`);
-if (field) field.value = draft[key] || '';
-});
-}
-} catch (e) {
-sessionStorage.removeItem(FORM_DRAFT_KEY);
-}
-})();
-// Auto-save on input
-let saveTimer;
-document.getElementById('grantForm').addEventListener('input', function() {
-clearTimeout(saveTimer);
-saveTimer = setTimeout(function() {
-const formData = new FormData(document.getElementById('grantForm'));
-const data = {};
-formData.forEach((v, k) => data[k] = v);
-  sessionStorage.setItem(FORM_DRAFT_KEY, JSON.stringify(data));
-}, 500);
-});
-  // Clear draft on successful submit
-document.getElementById('grantForm').addEventListener('submit', function() {
-// Clear after successful submission (in renderSuccess)
-});
-  
 </script>
 </body>
 </html>
