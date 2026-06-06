@@ -95,25 +95,9 @@
 
 <script>
 const WEBHOOK_URL = 'https://grant-n8n-proxy.mohummadsultan0.workers.dev/decide-x7k9m2p-2026';
-const WEBHOOK_SECRET = 'grant-prod-2026-secure-key';
 const REQUEST_TIMEOUT = 45000;
 const MAX_RETRIES = 2;
 
-// HMAC ADDED
-async function generateHMACSignature(bodyString) {
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(WEBHOOK_SECRET),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
-  );
-  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(bodyString));
-  return Array.from(new Uint8Array(signature))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
 
 function getResponseData(data) {
   if (!data || typeof data !== 'object') return {};
@@ -164,7 +148,6 @@ async function reportError(errorType, errorMessage, details = {}) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Webhook-Secret': WEBHOOK_SECRET
       },
       body: JSON.stringify(payload)
     });
@@ -564,20 +547,15 @@ async function submitDecision() {
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
     try {
-      // HMAC ADDED
-      const bodyString = JSON.stringify(payload);
-      const signatureHex = await generateHMACSignature(bodyString);
+     const res = await fetch(WEBHOOK_URL, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(payload),
+signal: controller.signal
+});
 
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Webhook-Secret': WEBHOOK_SECRET,
-          'x-webhook-signature': signatureHex
-        },
-        body: bodyString,
-        signal: controller.signal
-      });
 
       clearTimeout(timeoutId);
 
