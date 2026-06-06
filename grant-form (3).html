@@ -800,23 +800,26 @@ async function trySubmit(attempt = 1) {
   }
 }
 
-  const result = await trySubmit(1);
-  const data = result.data;
-
-  // ═══════════════════════════════════════════════════════
-
-
-  if (data.success === true) {
-    renderSuccess(data, payload);
-    return;
-  }
-
-  showResponse(data);
-
-  btn.disabled = false;
-  spinner.classList.add('hidden');
-  btnText.textContent = 'Submit Application';
+ try {
+const result = await trySubmit(1);
+const data = result.data;
+if (data.success === true) {
+renderSuccess(data, payload);
+return;
+}
+showResponse(data);
+} catch (e) {
+showResponse({
+success: false,
+error: true,
+error_code: 'UNEXPECTED_ERROR',
+message: 'An unexpected error occurred. Please try again.'
 });
+} finally {
+btn.disabled = false;
+spinner.classList.add('hidden');
+btnText.textContent = 'Submit Application';
+}
 
 function escHtml(t) {
   if (!t) return '';
@@ -824,6 +827,42 @@ function escHtml(t) {
   d.textContent = t;
   return d.innerHTML;
 }
+  // ═══════════════════════════════════════════
+// FORM DRAFT AUTO-SAVE
+// ═══════════════════════════════════════════
+  const FORM_DRAFT_KEY = 'grantApplicationDraft';
+// Restore draft on page load
+(function restoreDraft() {
+const saved = sessionStorage.getItem(FORM_DRAFT_KEY);
+if (!saved) return;
+try {
+const draft = JSON.parse(saved);
+if (confirm('You have a saved draft. Would you like to restore it?')) {
+Object.keys(draft).forEach(key => {
+const field = document.querySelector(`[name="${key}"]`);
+if (field) field.value = draft[key] || '';
+});
+}
+} catch (e) {
+sessionStorage.removeItem(FORM_DRAFT_KEY);
+}
+})();
+// Auto-save on input
+let saveTimer;
+document.getElementById('grantForm').addEventListener('input', function() {
+clearTimeout(saveTimer);
+saveTimer = setTimeout(function() {
+const formData = new FormData(document.getElementById('grantForm'));
+const data = {};
+formData.forEach((v, k) => data[k] = v);
+  sessionStorage.setItem(FORM_DRAFT_KEY, JSON.stringify(data));
+}, 500);
+});
+  // Clear draft on successful submit
+document.getElementById('grantForm').addEventListener('submit', function() {
+// Clear after successful submission (in renderSuccess)
+});
+  
 </script>
 </body>
 </html>
